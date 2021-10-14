@@ -25,11 +25,15 @@ def k_means_cluster_step(points: np.ndarray, centroids: np.ndarray) -> Tuple[np.
     centroids = update_centroids(clusters)
     return clusters, centroids
 
-def k_means_clustering(points: np.ndarray, k: int, seed: int = None) -> np.ndarray:
+def k_means_clustering(points: np.ndarray, k: int, seed: int = None) -> Tuple[np.ndarray,int]:
+    """Returns clusters and number of iterations before convergence"""
     centroids = pick_initial_centroids(k, points, seed)
     converged = False
+    iterations = 0
     while not converged:
         clusters, new_centroids = k_means_cluster_step(points, centroids)
         converged = np.array_equal(new_centroids, centroids)
         centroids = new_centroids
-    return clusters
+        if not converged:
+            iterations += 1
+    return clusters, iterations
